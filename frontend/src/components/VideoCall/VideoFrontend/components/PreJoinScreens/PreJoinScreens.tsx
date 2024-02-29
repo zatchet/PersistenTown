@@ -16,6 +16,7 @@ export enum Steps {
   deviceSelectionStep,
 }
 
+// TODO: remove this eventually
 testFirebaseStuff();
 
 export default function PreJoinScreens() {

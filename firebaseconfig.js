@@ -24,6 +24,7 @@ export const firebaseApp = initializeApp(firebaseConfig);
 export const db = getFirestore(firebaseApp);
 const analytics = getAnalytics(firebaseApp);
 
+// TODO remove this eventually
 // logs some stuff to the dev tools console to ensure firebase is working and whatknot
 export async function testFirebaseStuff() {
   // if projectId is 'persisTown', then you're succesfully connected
