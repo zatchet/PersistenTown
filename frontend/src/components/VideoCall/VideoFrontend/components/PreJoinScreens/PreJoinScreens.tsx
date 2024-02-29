@@ -9,18 +9,20 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { Heading, Text } from '@chakra-ui/react';
 import TownSelection from '../../../../Login/TownSelection';
 import { TownJoinResponse } from '../../../../../types/CoveyTownSocket';
+import { testFirebaseStuff } from '../../../../../../../firebaseconfig'
 
 export enum Steps {
   roomNameStep,
   deviceSelectionStep,
 }
 
+testFirebaseStuff();
+
 export default function PreJoinScreens() {
   const { user } = useAppState();
   const { getAudioAndVideoTracks } = useVideoContext();
 
   const [mediaError, setMediaError] = useState<Error>();
-
 
   useEffect(() => {
     if (!mediaError) {
