@@ -10,6 +10,7 @@ import { Heading, Text } from '@chakra-ui/react';
 import TownSelection from '../../../../Login/TownSelection';
 import { TownJoinResponse } from '../../../../../types/CoveyTownSocket';
 import { testFirebaseStuff } from '../../../../../../../firebaseconfig'
+import LoginInput from '../../../../Login/SignInInput';
 
 export enum Steps {
   roomNameStep,
@@ -46,6 +47,7 @@ export default function PreJoinScreens() {
         to hang out in, or join an existing one.
       </Text>
         <DeviceSelectionScreen />
+        <LoginInput />
         <TownSelection />
     </IntroContainer>
   );
