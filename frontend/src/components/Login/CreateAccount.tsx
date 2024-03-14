@@ -1,4 +1,4 @@
-import { getAuth, createUserWithEmailAndPassword, User } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, User } from 'firebase/auth';
 import { Heading, Button, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
