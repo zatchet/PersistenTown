@@ -1,6 +1,5 @@
 import { Button, Heading, Input } from '@chakra-ui/react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { set } from 'lodash';
 import React, { useState } from 'react';
 
 export default function SignInInput() {
