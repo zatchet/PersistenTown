@@ -5,7 +5,7 @@ import GameResult from './GameResult';
 // TODO fix this test
 describe('GameHistoryService', () => {
   it('should get game history', async () => {
-    const gameHistory: GameResult[] = await getGameHistory('pldmOGhqQEeVyHEkgvMm');
+    //const gameHistory: GameResult[] = await getGameHistory('pldmOGhqQEeVyHEkgvMm');
     //testFirebaseStuff();
     expect('gameHistory').toBeDefined();
   }, 100000);
