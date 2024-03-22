@@ -9,8 +9,7 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { Heading, Text, Button } from '@chakra-ui/react';
 import TownSelection from '../../../../Login/TownSelection';
 import { TownJoinResponse } from '../../../../../types/CoveyTownSocket';
-import { testFirebaseStuff } from '../../../../../../../firebaseconfig'
-import CreateAccount from '../../../../Login/CreateAccount';
+import { testFirebaseStuff } from '../../../../../classes/users/firebaseconfig';
 
 export enum Steps {
   roomNameStep,
