@@ -5,15 +5,18 @@ import {
   GameInstanceID,
   GameMove,
   GameResult,
-  GameState,
+  PlayerID,
+  WinnableGameState,
 } from '../../types/CoveyTownSocket';
 
 /**
  * This class is the base class for all games. It is responsible for managing the
  * state of the game. @see GameArea
  */
-export default abstract class Game<StateType extends GameState, MoveType> {
+export default abstract class Game<StateType extends WinnableGameState, MoveType> {
   private _state: StateType;
+
+  private _date: Date;
 
   public readonly id: GameInstanceID;
 
@@ -29,6 +32,7 @@ export default abstract class Game<StateType extends GameState, MoveType> {
   public constructor(initialState: StateType) {
     this.id = nanoid() as GameInstanceID;
     this._state = initialState;
+    this._date = new Date();
   }
 
   public get state() {
@@ -90,5 +94,17 @@ export default abstract class Game<StateType extends GameState, MoveType> {
       result: this._result,
       players: this._players.map(player => player.id),
     };
+  }
+
+  get players(): PlayerID[] {
+    return this._players.map(player => player.id);
+  }
+
+  get date(): Date {
+    return this._date;
+  }
+
+  get winner(): PlayerID {
+    return this._state.winner || '';
   }
 }
