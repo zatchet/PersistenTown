@@ -9,7 +9,8 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { Heading, Text } from '@chakra-ui/react';
 import TownSelection from '../../../../Login/TownSelection';
 import { TownJoinResponse } from '../../../../../types/CoveyTownSocket';
-import { testFirebaseStuff } from '../../../../../classes/users/firebaseconfig';\
+import { testFirebaseStuff } from '../../../../../classes/users/firebaseconfig';
+import SignInInput from '../../../../Login/SignInInput';
 
 export enum Steps {
   roomNameStep,
@@ -46,6 +47,7 @@ export default function PreJoinScreens() {
         to hang out in, or join an existing one.
       </Text>
         <DeviceSelectionScreen />
+        <SignInInput />
         <TownSelection />
     </IntroContainer>
   );
