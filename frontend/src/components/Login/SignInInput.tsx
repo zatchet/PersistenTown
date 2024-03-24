@@ -1,9 +1,10 @@
 import { Button, Heading, Input } from '@chakra-ui/react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
+import { firebaseApp } from '../../../../firebaseconfig';
 
 export default function SignInInput() {
-  const auth = getAuth();
+  const auth = getAuth(firebaseApp);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignedIn, setIsSignedIn] = useState(false);
