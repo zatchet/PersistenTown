@@ -1,15 +1,14 @@
 import { Heading, Button, FormControl, FormLabel, Input, Text, Box } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   User,
   // connectAuthEmulator,
   updateProfile,
 } from 'firebase/auth';
+import { auth } from '../../classes/users/firebaseconfig';
 
 export default function CreateAccount() {
-  const auth = getAuth();
   // connectAuthEmulator(auth, 'http://localhost:9099');
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
@@ -21,7 +20,7 @@ export default function CreateAccount() {
     setIsCreating(true);
     createUserWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
-        // so we should redirect them to somewhere useful (like the join town page) once we have that
+        // we should redirect them/rerender to somewhere useful (like the join town page) once we have that
         const user = userCredential.user;
         updateProfile(user, { displayName: displayName });
         setLoggedInUser(user);
