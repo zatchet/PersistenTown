@@ -1,4 +1,13 @@
-import { Heading, Button, FormControl, FormLabel, Input, Text, Box } from '@chakra-ui/react';
+import {
+  Heading,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Text,
+  Box,
+  useToast,
+} from '@chakra-ui/react';
 import React, { useState } from 'react';
 import {
   createUserWithEmailAndPassword,
@@ -15,6 +24,12 @@ export default function CreateAccount() {
   const [password, setPassword] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState<User | undefined>(undefined);
+  const toast = useToast();
+
+  function extractErrorMsg(error: Error) {
+    const firebaseLength = 'Firebase: '.length;
+    return error.message.substring(firebaseLength, error.message.length - 1);
+  }
 
   function createAcc() {
     setIsCreating(true);
@@ -30,6 +45,13 @@ export default function CreateAccount() {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
+        toast({
+          title: 'Error creating account',
+          description: extractErrorMsg(error),
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        });
       });
 
     setIsCreating(false);
