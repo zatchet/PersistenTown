@@ -10,6 +10,7 @@ import { Heading, Text, Button } from '@chakra-ui/react';
 import TownSelection from '../../../../Login/TownSelection';
 import { TownJoinResponse } from '../../../../../types/CoveyTownSocket';
 import { testFirebaseStuff } from '../../../../../classes/users/firebaseconfig';
+import CreateAccount from '../../../../Login/CreateAccount';
 
 export enum Steps {
   roomNameStep,
