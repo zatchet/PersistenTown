@@ -1,4 +1,6 @@
 import { nanoid } from 'nanoid';
+import { arrayUnion, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { db } from './firebaseconfig';
 import Player from '../../lib/Player';
 import {
   GameInstance,
@@ -18,6 +20,8 @@ export default abstract class Game<StateType extends WinnableGameState, MoveType
 
   private _date: Date;
 
+  protected _testMode: boolean;
+
   public readonly id: GameInstanceID;
 
   protected _result?: GameResult;
@@ -29,10 +33,11 @@ export default abstract class Game<StateType extends WinnableGameState, MoveType
    * @param initialState State to initialize the game with.
    * @param emitAreaChanged A callback to invoke when the state of the game changes. This is used to notify clients.
    */
-  public constructor(initialState: StateType) {
+  public constructor(initialState: StateType, testMode = false) {
     this.id = nanoid() as GameInstanceID;
     this._state = initialState;
     this._date = new Date();
+    this._testMode = testMode;
   }
 
   public get state() {
@@ -96,6 +101,11 @@ export default abstract class Game<StateType extends WinnableGameState, MoveType
     };
   }
 
+  /**
+   * Returns the kind of game being played.
+   */
+  public abstract gameType(): string;
+
   get players(): PlayerID[] {
     return this._players.map(player => player.id);
   }
@@ -106,5 +116,56 @@ export default abstract class Game<StateType extends WinnableGameState, MoveType
 
   get winner(): PlayerID {
     return this._state.winner || '';
+  }
+
+  private async _writeGameResult(collection: string, userID: PlayerID): Promise<number> {
+    const docRef = doc(db, collection, userID);
+    const docSnap = await getDoc(docRef);
+
+    const gameResult = {
+      Date: this.date,
+      GameType: this.gameType(),
+      Winner: this.winner,
+      Players: this.players,
+    };
+
+    if (docSnap.exists()) {
+      try {
+        await updateDoc(docRef, { Results: arrayUnion(gameResult) });
+        return 0;
+      } catch (error) {
+        return 1;
+      }
+    } else {
+      try {
+        await setDoc(docRef, { Results: arrayUnion(gameResult) });
+      } catch (error) {
+        return 1;
+      }
+    }
+
+    return 0;
+  }
+
+  /**
+   * Writes the game results to the Firestore database.
+   * @returns 0 on success, 1 on failure.
+   */
+  public async writeGameResults(collection: string) {
+    const codes = new Set<number>();
+
+    const userIDs = this.players;
+
+    // eslint-disable-next-line guard-for-in
+    for (const userID of userIDs) {
+      // eslint-disable-next-line no-await-in-loop
+      codes.add(await this._writeGameResult(collection, userID));
+    }
+
+    if (codes.has(1)) {
+      return 1;
+    }
+
+    return 0;
   }
 }
