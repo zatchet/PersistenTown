@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { arrayUnion, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { arrayUnion, doc, getDoc, setDoc, updateDoc } from '@firebase/firestore';
 import { db } from './firebaseconfig';
 import Player from '../../lib/Player';
 import {
