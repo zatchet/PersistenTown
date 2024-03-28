@@ -1,5 +1,13 @@
 import { nanoid } from 'nanoid';
-import { arrayUnion, doc, getDoc, setDoc, updateDoc } from '@firebase/firestore';
+import {
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from '@firebase/firestore';
 import { db } from './firebaseconfig';
 import Player from '../../lib/Player';
 import {
@@ -118,8 +126,15 @@ export default abstract class Game<StateType extends WinnableGameState, MoveType
     return this._state.winner || '';
   }
 
-  private async _writeGameResult(collection: string, userID: PlayerID): Promise<number> {
-    const docRef = doc(db, collection, userID);
+  private async _writeGameResult(colName: string, userID: PlayerID): Promise<number> {
+    const collectionRef = collection(db, colName);
+    const collectionSnap = await getDocs(collectionRef);
+
+    if (collectionSnap.empty) {
+      return 1;
+    }
+
+    const docRef = doc(db, colName, userID);
     const docSnap = await getDoc(docRef);
 
     const gameResult = {
@@ -129,29 +144,23 @@ export default abstract class Game<StateType extends WinnableGameState, MoveType
       Players: this.players,
     };
 
-    if (docSnap.exists()) {
-      try {
+    try {
+      if (docSnap.exists()) {
         await updateDoc(docRef, { Results: arrayUnion(gameResult) });
-        return 0;
-      } catch (error) {
-        return 1;
+      } else {
+        await setDoc(docRef, { Results: [gameResult] });
       }
-    } else {
-      try {
-        await setDoc(docRef, { Results: arrayUnion(gameResult) });
-      } catch (error) {
-        return 1;
-      }
+      return 0;
+    } catch (error) {
+      return 1;
     }
-
-    return 0;
   }
 
   /**
    * Writes the game results to the Firestore database.
    * @returns 0 on success, 1 on failure.
    */
-  public async writeGameResults(collection: string) {
+  public async writeGameResults(colName: string) {
     const codes = new Set<number>();
 
     const userIDs = this.players;
@@ -159,7 +168,7 @@ export default abstract class Game<StateType extends WinnableGameState, MoveType
     // eslint-disable-next-line guard-for-in
     for (const userID of userIDs) {
       // eslint-disable-next-line no-await-in-loop
-      codes.add(await this._writeGameResult(collection, userID));
+      codes.add(await this._writeGameResult(colName, userID));
     }
 
     if (codes.has(1)) {
