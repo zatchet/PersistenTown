@@ -6,11 +6,12 @@ import RoomNameScreen from './RoomNameScreen/RoomNameScreen';
 import { useAppState } from '../../state';
 import { useParams } from 'react-router-dom';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
-import { Heading, Text } from '@chakra-ui/react';
+import { Button, Heading, Text } from '@chakra-ui/react';
 import TownSelection from '../../../../Login/TownSelection';
 import { TownJoinResponse } from '../../../../../types/CoveyTownSocket';
-import { testFirebaseStuff } from '../../../../../classes/users/firebaseconfig';
+import { auth, testFirebaseStuff } from '../../../../../classes/users/firebaseconfig';
 import SignInInput from '../../../../Login/SignInInput';
+import { User, onAuthStateChanged } from 'firebase/auth';
 
 export enum Steps {
   roomNameStep,
@@ -22,6 +23,7 @@ testFirebaseStuff();
 
 export default function PreJoinScreens() {
   const { user } = useAppState();
+  const [userInfo, setUserInfo] = useState<User | null>(null);
   const { getAudioAndVideoTracks } = useVideoContext();
 
   const [mediaError, setMediaError] = useState<Error>();
@@ -35,7 +37,36 @@ export default function PreJoinScreens() {
       });
     }
   }, [getAudioAndVideoTracks, mediaError]);
+  
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      setUserInfo(user);
+    } else {
+      setUserInfo(null);
+    }
+  });
 
+
+  const attemptSignout = async () => {
+    auth.signOut().then(() => {
+      console.log('Signed out');
+    });
+  };
+
+    // return (
+    //   <IntroContainer>
+    //     <Heading as="h2" size="xl">Welcome to Covey.Town!</Heading>
+    //     <Text p="4">
+    //       Covey.Town is a social platform that integrates a 2D game-like metaphor with video chat.
+    //       To get started, setup your camera and microphone, choose a username, and then create a new town
+    //       to hang out in, or join an existing one.
+    //     </Text>
+    //     <Text p="4">
+    //       Please log in or register to continue
+    //     </Text>
+    //       <SignInInput />
+    //   </IntroContainer>
+    // );
 
   return (
     <IntroContainer>
@@ -46,9 +77,20 @@ export default function PreJoinScreens() {
         To get started, setup your camera and microphone, choose a username, and then create a new town
         to hang out in, or join an existing one.
       </Text>
-        <DeviceSelectionScreen />
-        <SignInInput />
-        <TownSelection />
+      {userInfo === null ? 
+      (<><Text p="4">
+          Please log in or register to continue
+        </Text><SignInInput /></>) : 
+        <><DeviceSelectionScreen />
+        <TownSelection /> 
+        <Button
+            datatype-testid='signout-button'
+            onClick={attemptSignout}
+            >
+            Sign Out
+          </Button>
+          </>}
+
     </IntroContainer>
   );
 }

@@ -6,14 +6,15 @@ import React, { useState } from 'react';
 export default function SignInInput() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(auth.currentUser !== null);
   const [signingIn, setSigningIn] = useState(false);
 
-  function attemptLogin() {
+  const attemptLogin = async () => {
     setSigningIn(true);
     signInWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
         const user = userCredential.user;
+        console.log(auth.currentUser?.email);
         setIsSignedIn(true);
       })
       .catch(error => {
@@ -22,9 +23,19 @@ export default function SignInInput() {
         console.log(errorCode, errorMessage);
       });
     setSigningIn(false);
-  }
+  };
 
-  // absolutely horrendous signin form - will polish once it has a more permanent home ie. not in the town selection screen
+  const attemptSignout = async () => {
+    setSigningIn(true);
+    auth.signOut().then(() => {
+      console.log('Signed out');
+      setIsSignedIn(false);
+      setEmail('');
+      setPassword('');
+    });
+    setSigningIn(false);
+  };
+
   return (
     <>
       {isSignedIn ? (
@@ -40,11 +51,18 @@ export default function SignInInput() {
           />
           <Button
             datatype-testid='signin-button'
-            onClick={() => attemptLogin()}
+            onClick={attemptLogin}
             isLoading={signingIn}
             disabled={signingIn || isSignedIn}>
             Sign In
           </Button>
+          {/* <Button
+            datatype-testid='signout-button'
+            onClick={attemptSignout}
+            isLoading={signingIn}
+            disabled={signingIn}>
+            Sign Out
+          </Button> */}
         </>
       )}
     </>
