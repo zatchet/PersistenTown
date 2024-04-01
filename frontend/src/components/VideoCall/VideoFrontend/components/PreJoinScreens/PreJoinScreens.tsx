@@ -10,15 +10,10 @@ import { Button, Heading, Text } from '@chakra-ui/react';
 import TownSelection from '../../../../Login/TownSelection';
 import { TownJoinResponse } from '../../../../../types/CoveyTownSocket';
 import { auth, testFirebaseStuff } from '../../../../../classes/users/firebaseconfig';
-<<<<<<< HEAD
 import CreateAccount from '../../../../Login/CreateAccount';
 import SignInInput from '../../../../Login/SignInInput';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import MyAccountInfo from '../../../../Login/MyAccountInfo';
-=======
-import SignInInput from '../../../../Login/SignInInput';
-import { User, onAuthStateChanged } from 'firebase/auth';
->>>>>>> 9cc05ac3ee3d4f57d35930e3846a56285d1b5cce
 
 export enum Steps {
   roomNameStep,
