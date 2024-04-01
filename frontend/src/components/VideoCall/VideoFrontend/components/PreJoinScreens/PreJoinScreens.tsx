@@ -40,9 +40,9 @@ export default function PreJoinScreens() {
     }
   }, [getAudioAndVideoTracks, mediaError]);
   
-  onAuthStateChanged(auth, user => {
-    if (user) {
-      setUserInfo(user);
+  onAuthStateChanged(auth, fbuser => {
+    if (fbuser) {
+      setUserInfo(fbuser);
     } else {
       setUserInfo(null);
     }
@@ -54,21 +54,6 @@ export default function PreJoinScreens() {
       console.log('Signed out');
     });
   };
-
-    // return (
-    //   <IntroContainer>
-    //     <Heading as="h2" size="xl">Welcome to Covey.Town!</Heading>
-    //     <Text p="4">
-    //       Covey.Town is a social platform that integrates a 2D game-like metaphor with video chat.
-    //       To get started, setup your camera and microphone, choose a username, and then create a new town
-    //       to hang out in, or join an existing one.
-    //     </Text>
-    //     <Text p="4">
-    //       Please log in or register to continue
-    //     </Text>
-    //       <SignInInput />
-    //   </IntroContainer>
-    // );
 
   return (
     <>

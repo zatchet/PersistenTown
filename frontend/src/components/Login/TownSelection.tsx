@@ -29,7 +29,9 @@ import { User, onAuthStateChanged } from 'firebase/auth';
 
 export default function TownSelection(): JSX.Element {
   const [userInfo, setUserInfo] = useState<User | null>(null);
-  const [userName, setUserName] = useState<string>(auth.currentUser?.email || '');
+  const [userName, setUserName] = useState<string>(
+    auth.currentUser?.displayName || auth.currentUser?.email || '',
+  );
   const [newTownName, setNewTownName] = useState<string>('');
   const [newTownIsPublic, setNewTownIsPublic] = useState<boolean>(true);
   const [townIDToJoin, setTownIDToJoin] = useState<string>('');
@@ -43,10 +45,8 @@ export default function TownSelection(): JSX.Element {
 
   onAuthStateChanged(auth, user => {
     if (user) {
-      setUserInfo(user);
       setUserName(user.displayName || user.email || '');
     } else {
-      setUserInfo(null);
       setUserName('');
     }
   });
