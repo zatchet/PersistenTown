@@ -10,10 +10,15 @@ import { Button, Heading, Text } from '@chakra-ui/react';
 import TownSelection from '../../../../Login/TownSelection';
 import { TownJoinResponse } from '../../../../../types/CoveyTownSocket';
 import { auth, testFirebaseStuff } from '../../../../../classes/users/firebaseconfig';
+<<<<<<< HEAD
 import CreateAccount from '../../../../Login/CreateAccount';
 import SignInInput from '../../../../Login/SignInInput';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import MyAccountInfo from '../../../../Login/MyAccountInfo';
+=======
+import SignInInput from '../../../../Login/SignInInput';
+import { User, onAuthStateChanged } from 'firebase/auth';
+>>>>>>> 9cc05ac3ee3d4f57d35930e3846a56285d1b5cce
 
 export enum Steps {
   roomNameStep,
@@ -65,10 +70,20 @@ export default function PreJoinScreens() {
         To get started, setup your camera and microphone, choose a username, and then create a new town
         to hang out in, or join an existing one.
       </Text>
-        <DeviceSelectionScreen />
-        <CreateAccount />
-        <SignInInput />
-        <TownSelection />
+      {userInfo === null ? 
+      (<><Text p="4">
+          Please log in or register to continue
+        </Text><SignInInput /></>) : 
+        <><DeviceSelectionScreen />
+        <TownSelection /> 
+        <Button
+            datatype-testid='signout-button'
+            onClick={attemptSignout}
+            >
+            Sign Out
+          </Button>
+          </>}
+
     </IntroContainer>
     <IntroContainer>
       <MyAccountInfo />
