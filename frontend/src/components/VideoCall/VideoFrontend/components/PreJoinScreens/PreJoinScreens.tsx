@@ -11,6 +11,7 @@ import TownSelection from '../../../../Login/TownSelection';
 import { TownJoinResponse } from '../../../../../types/CoveyTownSocket';
 import { testFirebaseStuff } from '../../../../../classes/users/firebaseconfig';
 import CreateAccount from '../../../../Login/CreateAccount';
+import SignInInput from '../../../../Login/SignInInput';
 
 export enum Steps {
   roomNameStep,
@@ -48,6 +49,7 @@ export default function PreJoinScreens() {
       </Text>
         <DeviceSelectionScreen />
         <CreateAccount />
+        <SignInInput />
         <TownSelection />
     </IntroContainer>
   );
