@@ -6,10 +6,11 @@ import RoomNameScreen from './RoomNameScreen/RoomNameScreen';
 import { useAppState } from '../../state';
 import { useParams } from 'react-router-dom';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
-import { Heading, Text } from '@chakra-ui/react';
+import { Heading, Text, Button } from '@chakra-ui/react';
 import TownSelection from '../../../../Login/TownSelection';
 import { TownJoinResponse } from '../../../../../types/CoveyTownSocket';
 import { testFirebaseStuff } from '../../../../../classes/users/firebaseconfig';
+import CreateAccount from '../../../../Login/CreateAccount';
 import SignInInput from '../../../../Login/SignInInput';
 
 export enum Steps {
@@ -47,6 +48,7 @@ export default function PreJoinScreens() {
         to hang out in, or join an existing one.
       </Text>
         <DeviceSelectionScreen />
+        <CreateAccount />
         <SignInInput />
         <TownSelection />
     </IntroContainer>
