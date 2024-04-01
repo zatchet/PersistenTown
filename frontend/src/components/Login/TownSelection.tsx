@@ -263,7 +263,7 @@ export default function TownSelection(): JSX.Element {
                 placeholder='Your name'
                 value={userName}
                 onChange={event => setUserName(event.target.value)}
-                disabled='disabled'
+                disabled={true}
               />
             </FormControl>
           </Box>

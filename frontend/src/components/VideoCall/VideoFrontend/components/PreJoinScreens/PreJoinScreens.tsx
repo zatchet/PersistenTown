@@ -66,7 +66,7 @@ export default function PreJoinScreens() {
         to hang out in, or join an existing one.
       </Text>
       {userInfo === null ? 
-      (<><Text p="4">
+        (<><Text p="4">
           Please log in or register to continue
         </Text><SignInInput /></>) : 
         <><DeviceSelectionScreen />
@@ -77,11 +77,11 @@ export default function PreJoinScreens() {
             >
             Sign Out
           </Button>
-          </>}
+        </>}
+        <IntroContainer>
+          <MyAccountInfo />
+       </IntroContainer>
 
-    </IntroContainer>
-    <IntroContainer>
-      <MyAccountInfo />
     </IntroContainer>
     </>
   );
