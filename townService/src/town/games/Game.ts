@@ -165,7 +165,9 @@ export default abstract class Game<StateType extends WinnableGameState, MoveType
 
     const userIDs = this.players;
 
-    userIDs.forEach(async userID => {await this._writeGameResult(colName, userID)});
+    userIDs.forEach(async userID => {
+      await this._writeGameResult(colName, userID);
+    });
 
     if (codes.has(1)) {
       return 1;
