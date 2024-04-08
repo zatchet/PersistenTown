@@ -15,8 +15,6 @@ export default function SignInInput() {
       return 'Email address is not valid. Please try again.';
     } else if (error.message.startsWith('Firebase: Error (auth/invalid-credential)')) {
       return 'Invalid email or password. Please try again.';
-    } else if (error.message.startsWith('Firebase: Error (auth/user-not-found)')) {
-      return 'No user associated with email. Please try again.';
     } else if (error.message.startsWith('Firebase: Error (auth/missing-password)')) {
       return 'Password is required. Please try again.';
     } else {

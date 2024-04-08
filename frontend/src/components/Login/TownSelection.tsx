@@ -27,7 +27,9 @@ import useVideoContext from '../VideoCall/VideoFrontend/hooks/useVideoContext/us
 import { auth } from '../../classes/users/firebaseconfig';
 
 export default function TownSelection(): JSX.Element {
-  const [userName, setUserName] = useState<string>(auth.currentUser?.displayName || '');
+  const [userName, setUserName] = useState<string>(
+    auth.currentUser?.displayName || auth.currentUser?.email || '',
+  );
   const [newTownName, setNewTownName] = useState<string>('');
   const [newTownIsPublic, setNewTownIsPublic] = useState<boolean>(true);
   const [townIDToJoin, setTownIDToJoin] = useState<string>('');
