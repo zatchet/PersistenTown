@@ -11,6 +11,7 @@ export default function SignInInput() {
   const toast = useToast();
 
   function signingErrorToString(error: Error) {
+    const firebaseLength = 'Firebase: '.length;
     if (error.message.startsWith('Firebase: Error (auth/invalid-email)')) {
       return 'Email address is not valid. Please try again.';
     } else if (error.message.startsWith('Firebase: Error (auth/invalid-credential)')) {
@@ -18,7 +19,7 @@ export default function SignInInput() {
     } else if (error.message.startsWith('Firebase: Error (auth/missing-password)')) {
       return 'Password is required. Please try again.';
     } else {
-      return error.message;
+      return error.message.substring(firebaseLength, error.message.length - 1);
     }
   }
 
