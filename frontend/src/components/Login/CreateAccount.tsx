@@ -1,24 +1,9 @@
-import {
-  Heading,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Text,
-  Box,
-  useToast,
-} from '@chakra-ui/react';
+import { Heading, Button, FormControl, FormLabel, Input, Box, useToast } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import {
-  createUserWithEmailAndPassword,
-  User,
-  // connectAuthEmulator,
-  updateProfile,
-} from 'firebase/auth';
+import { createUserWithEmailAndPassword, User, updateProfile } from 'firebase/auth';
 import { auth } from '../../classes/users/firebaseconfig';
 
 export default function CreateAccount() {
-  // connectAuthEmulator(auth, 'http://localhost:9099');
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,11 +16,17 @@ export default function CreateAccount() {
     return error.message.substring(firebaseLength, error.message.length - 1);
   }
 
+  function resetForm() {
+    setDisplayName('');
+    setEmail('');
+    setPassword('');
+    setIsCreating(false);
+  }
+
   function createAcc() {
     setIsCreating(true);
     createUserWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
-        // we should redirect them/rerender to somewhere useful (like the join town page) once we have that
         const user = userCredential.user;
         updateProfile(user, { displayName: displayName });
         setLoggedInUser(user);
@@ -45,6 +36,7 @@ export default function CreateAccount() {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
+        resetForm();
         toast({
           title: 'Error creating account',
           description: extractErrorMsg(error),
@@ -53,13 +45,11 @@ export default function CreateAccount() {
           isClosable: true,
         });
       });
-
-    setIsCreating(false);
   }
 
   return (
     <Box mb='2' p='4' borderWidth='1px' borderRadius='lg'>
-      {(!loggedInUser && (
+      {!loggedInUser && (
         <>
           <Heading>Create Account</Heading>
           <FormControl>
@@ -97,12 +87,6 @@ export default function CreateAccount() {
             Connect
           </Button>
         </>
-      )) || (
-        <Box p='4' borderWidth='1px' borderRadius='lg'>
-          <Text>
-            Logged in with email {loggedInUser?.email} UID: {loggedInUser?.uid}
-          </Text>
-        </Box>
       )}
     </Box>
   );
