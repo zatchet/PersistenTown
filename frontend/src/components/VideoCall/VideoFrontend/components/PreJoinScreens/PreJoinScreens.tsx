@@ -45,13 +45,6 @@ export default function PreJoinScreens() {
     }
   });
 
-
-  const attemptSignout = async () => {
-    auth.signOut().then(() => {
-      console.log('Signed out');
-    });
-  };
-
   return (
     <>
     <IntroContainer>
@@ -72,12 +65,6 @@ export default function PreJoinScreens() {
         </>) : 
         <><DeviceSelectionScreen />
         <TownSelection /> 
-        <Button
-            datatype-testid='signout-button'
-            onClick={attemptSignout}
-            >
-            Sign Out
-          </Button>
         </>}
     </IntroContainer>
     <IntroContainer>

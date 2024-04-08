@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Input } from '@chakra-ui/react';
+import { Box, Button, Heading, Input, useToast } from '@chakra-ui/react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../classes/users/firebaseconfig';
 import React, { useState } from 'react';
@@ -8,6 +8,21 @@ export default function SignInInput() {
   const [password, setPassword] = useState('');
   const [isSignedIn, setIsSignedIn] = useState(auth.currentUser !== null);
   const [signingIn, setSigningIn] = useState(false);
+  const toast = useToast();
+
+  function signingErrorToString(error: Error) {
+    if (error.message.startsWith('Firebase: Error (auth/invalid-email)')) {
+      return 'Email address is not valid. Please try again.';
+    } else if (error.message.startsWith('Firebase: Error (auth/invalid-credential)')) {
+      return 'Invalid email or password. Please try again.';
+    } else if (error.message.startsWith('Firebase: Error (auth/user-not-found)')) {
+      return 'No user associated with email. Please try again.';
+    } else if (error.message.startsWith('Firebase: Error (auth/missing-password)')) {
+      return 'Password is required. Please try again.';
+    } else {
+      return error.message;
+    }
+  }
 
   const attemptLogin = async () => {
     setSigningIn(true);
@@ -21,6 +36,13 @@ export default function SignInInput() {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
+        toast({
+          title: 'Error signing in',
+          description: signingErrorToString(error),
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        });
       });
     setSigningIn(false);
   };
