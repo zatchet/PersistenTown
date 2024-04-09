@@ -119,11 +119,7 @@ export default class TicTacToeGame extends Game<TicTacToeGameState, TicTacToeMov
     };
     this._checkForGameEnding();
     if (this.state.status === 'OVER') {
-      if (this._testMode) {
-        this.writeGameResults();
-      } else {
-        this.writeGameResults();
-      }
+      this.writeGameResults();
     }
   }
 

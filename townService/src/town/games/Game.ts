@@ -164,10 +164,6 @@ export default abstract class Game<StateType extends WinnableGameState, MoveType
     const results = await Promise.all(promises);
     results.forEach(result => codes.add(result));
 
-    if (codes.has(1)) {
-      return 1;
-    }
-
-    return 0;
+    return codes.has(1) ? 1 : 0;
   }
 }

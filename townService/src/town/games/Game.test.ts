@@ -36,17 +36,4 @@ describe('Game', () => {
 
     expect(result).toEqual(0);
   });
-
-  // it('should fail to write to Firestore', async () => {
-  //   const game = new ConnectFourGame(undefined, true);
-  //   const p1 = createPlayerForTesting();
-  //   const p2 = createPlayerForTesting();
-
-  //   game.join(p1);
-  //   game.join(p2);
-
-  //   const result = await game.writeGameResults();
-
-  //   expect(result).toEqual(1);
-  // });
 });
