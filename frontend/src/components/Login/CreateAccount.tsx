@@ -12,7 +12,11 @@ import React, { useState } from 'react';
 import { createUserWithEmailAndPassword, User, updateProfile } from 'firebase/auth';
 import { auth } from '../../classes/users/firebaseconfig';
 
-export default function CreateAccount() {
+type CreateAccountProps = {
+  updateDisplayName: (newName: string) => void;
+};
+
+export default function CreateAccount({ updateDisplayName }: CreateAccountProps) {
   const [displayName, setDisplayName] = useState<string | undefined>(undefined);
   const [email, setEmail] = useState<string | undefined>(undefined);
   const [password, setPassword] = useState<string | undefined>(undefined);
@@ -40,13 +44,13 @@ export default function CreateAccount() {
   }
 
   function resetForm() {
-    setDisplayName('');
-    setEmail('');
-    setPassword('');
+    setDisplayName(undefined);
+    setEmail(undefined);
+    setPassword(undefined);
     setIsCreating(false);
   }
 
-  function createAcc() {
+  async function createAcc() {
     setIsCreating(true);
     if (
       displayName === undefined ||
@@ -67,29 +71,32 @@ export default function CreateAccount() {
         duration: 9000,
         isClosable: true,
       });
-      setIsCreating(false);
-      return;
-    }
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(userCredential => {
-        const user = userCredential.user;
-        updateProfile(user, { displayName: displayName });
-        setLoggedInUser(user);
-        console.log(user);
-      })
-      .catch((error: Error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-        resetForm();
-        toast({
-          title: 'Error creating account',
-          description: errorToStr(error),
-          status: 'error',
-          duration: 9000,
-          isClosable: true,
+    } else {
+      console.log('displayname: ', displayName);
+      updateDisplayName(displayName);
+      await createUserWithEmailAndPassword(auth, email, password)
+        .then(async userCredential => {
+          const user = userCredential.user;
+          updateDisplayName(displayName);
+          await updateProfile(user, { displayName: displayName });
+          console.log('got to update profile');
+          setLoggedInUser(user);
+          console.log(user);
+        })
+        .catch((error: Error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode, errorMessage);
+          resetForm();
+          toast({
+            title: 'Error creating account',
+            description: errorToStr(error),
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+          });
         });
-      });
+    }
   }
 
   const formFilled = displayName !== '' && email !== '' && password != '';
@@ -132,7 +139,7 @@ export default function CreateAccount() {
             {!formFilled && <FormErrorMessage>All fields are required.</FormErrorMessage>}
           </FormControl>
           <Button
-            data-testid='joinTownByIDButton'
+            data-testid='createAccountButton'
             onClick={() => createAcc()}
             isLoading={isCreating}
             disabled={isCreating}>

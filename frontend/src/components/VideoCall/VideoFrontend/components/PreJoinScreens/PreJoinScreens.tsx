@@ -12,7 +12,7 @@ import { TownJoinResponse } from '../../../../../types/CoveyTownSocket';
 import { auth } from '../../../../../classes/users/firebaseconfig';
 import CreateAccount from '../../../../Login/CreateAccount';
 import SignInInput from '../../../../Login/SignInInput';
-import { User, onAuthStateChanged } from 'firebase/auth';
+import { User, onAuthStateChanged, updateProfile } from 'firebase/auth';
 import MyAccountInfo from '../../../../Login/MyAccountInfo';
 
 export enum Steps {
@@ -24,6 +24,7 @@ export default function PreJoinScreens() {
   const { user } = useAppState();
   const [userInfo, setUserInfo] = useState<User | null>(null);
   const { getAudioAndVideoTracks } = useVideoContext();
+  const [displayName, setDisplayName] = useState<string | null>(null);
 
   const [mediaError, setMediaError] = useState<Error>();
 
@@ -37,8 +38,11 @@ export default function PreJoinScreens() {
     }
   }, [getAudioAndVideoTracks, mediaError]);
   
-  onAuthStateChanged(auth, fbuser => {
+  onAuthStateChanged(auth, async fbuser => {
     if (fbuser) {
+      if (!fbuser.displayName) {
+        await updateProfile(fbuser, { displayName: displayName });
+      }
       setUserInfo(fbuser);
     } else {
       setUserInfo(null);
@@ -61,7 +65,7 @@ export default function PreJoinScreens() {
           Please log in or register to continue
         </Text>
         <SignInInput />
-        <CreateAccount />
+        <CreateAccount updateDisplayName={setDisplayName}/>
         </>) : 
         <><DeviceSelectionScreen />
         <TownSelection /> 
