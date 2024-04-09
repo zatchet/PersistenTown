@@ -24,8 +24,6 @@ export default function MyAccountInfo() {
   }, [isSignedIn, userInfo]);
 
   async function getDispName() {
-    console.log('getting disp name');
-    console.log('refreshed user');
     return auth.currentUser?.displayName || auth.currentUser?.email || '';
   }
 

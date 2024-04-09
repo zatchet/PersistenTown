@@ -59,9 +59,6 @@ export default function CreateAccount({ updateDisplayName }: CreateAccountProps)
       password === undefined ||
       password === ''
     ) {
-      console.log('displayname: ', displayName);
-      console.log('email: ', email);
-      console.log('password: ', password);
       resetForm();
       toast({
         title: 'Error creating account',
@@ -71,7 +68,6 @@ export default function CreateAccount({ updateDisplayName }: CreateAccountProps)
         isClosable: true,
       });
     } else {
-      console.log('displayname: ', displayName);
       updateDisplayName(displayName);
       await createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
@@ -84,9 +80,6 @@ export default function CreateAccount({ updateDisplayName }: CreateAccountProps)
           });
         })
         .catch((error: Error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorCode, errorMessage);
           resetForm();
           toast({
             title: 'Error creating account',
