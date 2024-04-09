@@ -56,8 +56,6 @@ export default function TownSelection(): JSX.Element {
   }, [updateTownListings]);
 
   async function getDispName() {
-    console.log('getting disp name');
-    console.log('refreshed user');
     return auth.currentUser?.displayName || auth.currentUser?.email || '';
   }
 
@@ -65,13 +63,8 @@ export default function TownSelection(): JSX.Element {
     auth.currentUser?.reload();
     onIdTokenChanged(auth, async fbuser => {
       if (fbuser) {
-        console.log('in id token changed');
-        const dispName = await getDispName();
-        console.log(dispName);
         setUserName(await getDispName());
-        console.log('updated name');
       } else {
-        console.log('not updating');
         setUserName('');
       }
     });
@@ -260,10 +253,6 @@ export default function TownSelection(): JSX.Element {
       }
     }
   };
-
-  // const dispName = async () => {
-  //   return getDispName();
-  // };
 
   return (
     <>

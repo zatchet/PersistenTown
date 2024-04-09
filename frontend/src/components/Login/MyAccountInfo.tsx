@@ -10,14 +10,12 @@ import GameStats from './GameStats';
 export default function MyAccountInfo() {
   const [isSignedIn, setIsSignedIn] = useState(auth.currentUser !== null);
   const [userInfo, setUserInfo] = useState<User | null>(null);
-  //const userInfo = auth.currentUser;
   const [gameHistory, setGameHistory] = useState<GameResult[]>([]);
   const [displayName, setDisplayName] = useState<string>('');
 
   const getHistory = async (userId: string) => {
     setGameHistory(await getGameHistory(userId));
   };
-  // const isSignedIn = auth.currentUser !== null;
 
   useEffect(() => {
     if (isSignedIn && userInfo) {
@@ -32,29 +30,22 @@ export default function MyAccountInfo() {
   }
 
   onAuthStateChanged(auth, user => {
-    console.log('in profile on auth state changed');
     if (user) {
       setIsSignedIn(true);
       setUserInfo(user);
-      console.log('user disp name:');
-      console.log(user.displayName);
       setDisplayName(user.displayName || '');
     } else {
       setIsSignedIn(false);
     }
   });
 
+  // fetches the user's display name here for it to be accurate on render
   useMemo(() => {
     auth.currentUser?.reload();
     onIdTokenChanged(auth, async fbuser => {
       if (fbuser) {
-        console.log('in id token changed');
-        const dispName = await getDispName();
-        console.log(dispName);
         setDisplayName(await getDispName());
-        console.log('updated name');
       } else {
-        console.log('not updating');
         setDisplayName('');
       }
     });
@@ -68,7 +59,6 @@ export default function MyAccountInfo() {
         <>
           <HStack>
             <Avatar name={displayName} />
-            {/* userInfo.displayName */}
             <Text fontSize='3xl'>{displayName}</Text>
           </HStack>
           <br />

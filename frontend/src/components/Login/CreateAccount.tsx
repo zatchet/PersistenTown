@@ -9,7 +9,7 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword, User, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../classes/users/firebaseconfig';
 
 type CreateAccountProps = {
@@ -21,7 +21,6 @@ export default function CreateAccount({ updateDisplayName }: CreateAccountProps)
   const [email, setEmail] = useState<string | undefined>(undefined);
   const [password, setPassword] = useState<string | undefined>(undefined);
   const [isCreating, setIsCreating] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState<User | undefined>(undefined);
   const toast = useToast();
 
   function extractErrorMsg(error: Error) {
@@ -75,13 +74,14 @@ export default function CreateAccount({ updateDisplayName }: CreateAccountProps)
       console.log('displayname: ', displayName);
       updateDisplayName(displayName);
       await createUserWithEmailAndPassword(auth, email, password)
-        .then(async userCredential => {
-          const user = userCredential.user;
-          updateDisplayName(displayName);
-          await updateProfile(user, { displayName: displayName });
-          console.log('got to update profile');
-          setLoggedInUser(user);
-          console.log(user);
+        .then(() => {
+          toast({
+            title: 'Account created',
+            description: 'Enjoy Covey.Town!',
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          });
         })
         .catch((error: Error) => {
           const errorCode = error.code;
@@ -103,50 +103,48 @@ export default function CreateAccount({ updateDisplayName }: CreateAccountProps)
 
   return (
     <Box mb='2' p='4' borderWidth='1px' borderRadius='lg'>
-      {!loggedInUser && (
-        <>
-          <Heading>Create Account</Heading>
-          <FormControl isRequired isInvalid={!formFilled}>
-            <FormLabel htmlFor='displayName'>Display Name</FormLabel>
-            <Input
-              autoFocus
-              name='displayName'
-              placeholder='Display name'
-              value={displayName}
-              isRequired={true}
-              onChange={event => setDisplayName(event.target.value)}
-            />
-            <FormLabel htmlFor='email'>Email</FormLabel>
-            <Input
-              autoFocus
-              name='email'
-              placeholder='Your email'
-              value={email}
-              type='email'
-              isRequired={true}
-              onChange={event => setEmail(event.target.value)}
-            />
-            <FormLabel htmlFor='password'>Password</FormLabel>
-            <Input
-              autoFocus
-              name='password'
-              placeholder='Password'
-              value={password}
-              type='password'
-              isRequired={true}
-              onChange={event => setPassword(event.target.value)}
-            />
-            {!formFilled && <FormErrorMessage>All fields are required.</FormErrorMessage>}
-          </FormControl>
-          <Button
-            data-testid='createAccountButton'
-            onClick={() => createAcc()}
-            isLoading={isCreating}
-            disabled={isCreating}>
-            Create Account
-          </Button>
-        </>
-      )}
+      <>
+        <Heading>Create Account</Heading>
+        <FormControl isRequired isInvalid={!formFilled}>
+          <FormLabel htmlFor='displayName'>Display Name</FormLabel>
+          <Input
+            autoFocus
+            name='displayName'
+            placeholder='Display name'
+            value={displayName}
+            isRequired={true}
+            onChange={event => setDisplayName(event.target.value)}
+          />
+          <FormLabel htmlFor='email'>Email</FormLabel>
+          <Input
+            autoFocus
+            name='email'
+            placeholder='Your email'
+            value={email}
+            type='email'
+            isRequired={true}
+            onChange={event => setEmail(event.target.value)}
+          />
+          <FormLabel htmlFor='password'>Password</FormLabel>
+          <Input
+            autoFocus
+            name='password'
+            placeholder='Password'
+            value={password}
+            type='password'
+            isRequired={true}
+            onChange={event => setPassword(event.target.value)}
+          />
+          {!formFilled && <FormErrorMessage>All fields are required.</FormErrorMessage>}
+        </FormControl>
+        <Button
+          data-testid='createAccountButton'
+          onClick={() => createAcc()}
+          isLoading={isCreating}
+          disabled={isCreating}>
+          Create Account
+        </Button>
+      </>
     </Box>
   );
 }

@@ -40,6 +40,7 @@ export default function PreJoinScreens() {
   
   onAuthStateChanged(auth, async fbuser => {
     if (fbuser) {
+      // must update the display name here for it to refresh in child components
       if (!fbuser.displayName) {
         await updateProfile(fbuser, { displayName: displayName });
       }
