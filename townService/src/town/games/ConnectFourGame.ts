@@ -322,11 +322,7 @@ export default class ConnectFourGame extends Game<ConnectFourGameState, ConnectF
     }
     this.state = newState;
     if (this.state.status === 'OVER') {
-      if (this._testMode) {
-        this.writeGameResults();
-      } else {
-        this.writeGameResults();
-      }
+      this.writeGameResults();
     }
   }
 
