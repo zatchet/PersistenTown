@@ -1,7 +1,7 @@
 import { Button, Heading, Avatar, HStack, Text, Divider } from '@chakra-ui/react';
-import { onAuthStateChanged, User, signOut } from 'firebase/auth';
+import { onAuthStateChanged, User, signOut, onIdTokenChanged } from 'firebase/auth';
 import { auth } from '../../classes/users/firebaseconfig';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import GameResult from '../../classes/users/GameResult';
 import getGameHistory from '../../classes/users/gameHistoryService';
 import GameHistoryTable from './GameHistoryTable';
@@ -11,6 +11,7 @@ export default function MyAccountInfo() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [userInfo, setUserInfo] = useState<User | null>(null);
   const [gameHistory, setGameHistory] = useState<GameResult[]>([]);
+  const [displayName, setDisplayName] = useState<string>('');
 
   const getHistory = async (userId: string) => {
     setGameHistory(await getGameHistory(userId));
@@ -22,14 +23,31 @@ export default function MyAccountInfo() {
     }
   }, [userInfo]);
 
+  async function getDispName() {
+    return auth.currentUser?.displayName || auth.currentUser?.email || '';
+  }
+
   onAuthStateChanged(auth, user => {
     if (user) {
       setIsSignedIn(true);
       setUserInfo(user);
+      setDisplayName(user.displayName || user.email || '');
     } else {
       setIsSignedIn(false);
     }
   });
+
+  // fetches the user's display name here for it to be accurate on render
+  useMemo(() => {
+    auth.currentUser?.reload();
+    onIdTokenChanged(auth, async fbuser => {
+      if (fbuser) {
+        setDisplayName(await getDispName());
+      } else {
+        setDisplayName('');
+      }
+    });
+  }, []);
 
   return (
     <>
@@ -38,8 +56,8 @@ export default function MyAccountInfo() {
       {isSignedIn && userInfo && auth.currentUser !== null ? (
         <>
           <HStack>
-            <Avatar name={userInfo.displayName || ''} />
-            <Text fontSize='3xl'>{userInfo.displayName}</Text>
+            <Avatar name={displayName} />
+            <Text fontSize='3xl'>{displayName}</Text>
           </HStack>
           <br />
           <Text fontSize='sm'>Email: {userInfo.email}</Text>

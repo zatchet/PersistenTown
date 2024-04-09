@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import assert from 'assert';
 import {
   Box,
@@ -25,6 +25,7 @@ import useLoginController from '../../hooks/useLoginController';
 import TownController from '../../classes/TownController';
 import useVideoContext from '../VideoCall/VideoFrontend/hooks/useVideoContext/useVideoContext';
 import { auth } from '../../classes/users/firebaseconfig';
+import { onIdTokenChanged } from 'firebase/auth';
 
 export default function TownSelection(): JSX.Element {
   const [userName, setUserName] = useState<string>(
@@ -53,6 +54,21 @@ export default function TownSelection(): JSX.Element {
       clearInterval(timer);
     };
   }, [updateTownListings]);
+
+  async function getDispName() {
+    return auth.currentUser?.displayName || auth.currentUser?.email || '';
+  }
+
+  useMemo(() => {
+    auth.currentUser?.reload();
+    onIdTokenChanged(auth, async fbuser => {
+      if (fbuser) {
+        setUserName(await getDispName());
+      } else {
+        setUserName('');
+      }
+    });
+  }, []);
 
   const handleJoin = useCallback(
     async (coveyRoomID: string) => {
