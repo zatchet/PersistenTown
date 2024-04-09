@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Input, useToast, HStack, ButtonGroup } from '@chakra-ui/react';
+import { Box, Button, Heading, Input, useToast, ButtonGroup } from '@chakra-ui/react';
 import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
