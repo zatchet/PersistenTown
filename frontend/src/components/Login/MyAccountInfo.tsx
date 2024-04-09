@@ -18,10 +18,10 @@ export default function MyAccountInfo() {
   };
 
   useEffect(() => {
-    if (isSignedIn && userInfo) {
+    if (userInfo) {
       getHistory(userInfo.uid);
     }
-  }, [isSignedIn, userInfo]);
+  }, [userInfo]);
 
   async function getDispName() {
     return auth.currentUser?.displayName || auth.currentUser?.email || '';
