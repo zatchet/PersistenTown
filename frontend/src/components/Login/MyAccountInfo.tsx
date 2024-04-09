@@ -8,7 +8,7 @@ import GameHistoryTable from './GameHistoryTable';
 import GameStats from './GameStats';
 
 export default function MyAccountInfo() {
-  const [isSignedIn, setIsSignedIn] = useState(auth.currentUser !== null);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const [userInfo, setUserInfo] = useState<User | null>(null);
   const [gameHistory, setGameHistory] = useState<GameResult[]>([]);
   const [displayName, setDisplayName] = useState<string>('');
@@ -31,7 +31,7 @@ export default function MyAccountInfo() {
     if (user) {
       setIsSignedIn(true);
       setUserInfo(user);
-      setDisplayName(user.displayName || '');
+      setDisplayName(user.displayName || user.email || '');
     } else {
       setIsSignedIn(false);
     }

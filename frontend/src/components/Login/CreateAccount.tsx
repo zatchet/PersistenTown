@@ -72,7 +72,7 @@ export default function CreateAccount({ updateDisplayName }: CreateAccountProps)
       await createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
           toast({
-            title: 'Account created',
+            title: 'Account created successfully',
             description: 'Enjoy Covey.Town!',
             status: 'success',
             duration: 9000,
