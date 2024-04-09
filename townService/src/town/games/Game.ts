@@ -126,13 +126,8 @@ export default abstract class Game<StateType extends WinnableGameState, MoveType
     return this._state.winner || '';
   }
 
-  private async _writeGameResult(colName: string, userID: PlayerID): Promise<number> {
-    const collectionRef = collection(db, colName);
-    const collectionSnap = await getDocs(collectionRef);
-
-    if (collectionSnap.empty) {
-      return 1;
-    }
+  private async _writeGameResult(userID: PlayerID): Promise<number> {
+    const colName = this._testMode ? 'test_collection' : 'GameHistory';
 
     const docRef = doc(db, colName, userID);
     const docSnap = await getDoc(docRef);
@@ -160,12 +155,12 @@ export default abstract class Game<StateType extends WinnableGameState, MoveType
    * Writes the game results to the Firestore database.
    * @returns 0 on success, 1 on failure.
    */
-  public async writeGameResults(colName: string) {
+  public async writeGameResults() {
     const codes = new Set<number>();
 
     const userIDs = this.players;
 
-    const promises = userIDs.map(userID => this._writeGameResult(colName, userID));
+    const promises = userIDs.map(userID => this._writeGameResult(userID));
     const results = await Promise.all(promises);
     results.forEach(result => codes.add(result));
 
