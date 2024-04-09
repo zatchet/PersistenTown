@@ -1,9 +1,15 @@
-import { Box, Button, Heading, Input, useToast, HStack } from '@chakra-ui/react';
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
+import { Box, Button, Heading, Input, useToast, HStack, ButtonGroup } from '@chakra-ui/react';
+import {
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from 'firebase/auth';
 import { auth } from '../../classes/users/firebaseconfig';
 import React, { useState } from 'react';
 
 export default function SignInInput() {
+  const provider = new GoogleAuthProvider();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignedIn, setIsSignedIn] = useState(auth.currentUser !== null);
@@ -18,6 +24,8 @@ export default function SignInInput() {
       return 'Invalid email or password. Please try again.';
     } else if (error.message.startsWith('Firebase: Error (auth/missing-password)')) {
       return 'Password is required. Please try again.';
+    } else if (error.message.includes('(auth/user-cancelled)')) {
+      return 'Sign in was canceled. Please try again.';
     } else {
       return error.message.substring(firebaseLength, error.message.length - 1);
     }
@@ -65,6 +73,29 @@ export default function SignInInput() {
       });
   };
 
+  const signInWithGoogle = async () => {
+    await signInWithPopup(auth, provider)
+      .then(() => {
+        toast({
+          title: 'Signed in with Google',
+          description: 'Enjoy Covey.Town!',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
+      })
+      .catch(error => {
+        console.log(error);
+        toast({
+          title: 'Error signing in',
+          status: 'error',
+          description: signingErrorToString(error),
+          duration: 9000,
+          isClosable: true,
+        });
+      });
+  };
+
   return (
     <>
       {isSignedIn ? (
@@ -83,7 +114,7 @@ export default function SignInInput() {
               placeholder='password'
               onChange={event => setPassword(event.target.value)}
             />
-            <HStack spacing={4}>
+            <ButtonGroup mt={2}>
               <Button
                 datatype-testid='signin-button'
                 onClick={attemptLogin}
@@ -91,10 +122,13 @@ export default function SignInInput() {
                 disabled={signingIn || isSignedIn}>
                 Sign In
               </Button>
+              <Button datatype-testid='google-signin-button' onClick={signInWithGoogle}>
+                Sign in with Google
+              </Button>
               <Button datatype-testid='pass-reset-button' onClick={attempSendPasswordReset}>
                 Forgot Password?
               </Button>
-            </HStack>
+            </ButtonGroup>
           </Box>
         </>
       )}
