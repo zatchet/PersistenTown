@@ -1,5 +1,7 @@
 # Manually Testing Firebase
 
+Firebase functionality does not need to be directly tested, but its integration with our app does. However, Firebase emulators, which are used for local testing, were incompatible with our project due to its requirement of a higher node version and its usage of Mocha instead of Jest.
+
 To test our usage of Firebase, we had to manually test creating and signing into an account, and displaying that account's information.
 This document details the steps we followed to test that Firebase accurately creates and stores user accounts, then displays that data.
 
@@ -9,7 +11,101 @@ This project runs on Node.js version 16.20.2, and npm version 8.19.4. `npm insta
 
 In order to access Firebase Console (which contains user authentication info and stored user account info) a gmail account with access and editing permissions has been prepared, with email address "cs4530group110@gmail.com" and password "CS4530group110!!!", with apostrophes removed.
 
+Some resources to use for generating credentials to test with:
+
+- [LastPass random username generator](https://www.lastpass.com/features/username-generator)
+- [LastPass random password generator](https://www.lastpass.com/features/password-generator)
+- [Temporary mail address generator](temp-mail.org/en/)
+
 ## Creating an account
+
+We tested out various cases, both the happy and sad path:
+
+Happy Path:
+
+1. When given a unique username, an email that hasn't been registered, and a password of 6 characters or more, an account is successfully created, the user is automatically signed in, and they are redirected to the TownSelection screen.
+
+Sad Path (Error cases):
+1. Display name is not unique
+2. Email is already registered
+3. Password is less than 6 characters long
+4. Any field is empty (all are required)
+
+### Test Happy Path
+1. Generate a random display name, email, and password using the resources listed above
+    1. Ensure the password length is 6 characters or more
+1. Navigate to local instance of PersistenTown
+2. Scroll to the 'Create Account' section
+3. Enter in display name, email, and password into the fields labeled as such
+4. Click the 'Create Account' button below the form
+5. __Verify the following:__
+    1. The page rerenders, displaying the TownSelection screen
+    1. A green toast appears at the bottom saying the account was successfully created
+    1. The 'Select a username' box shows the display name registered with in an uneditable text box
+    1. Towns are able to be created
+    1. Towns are able to be joined
+    1. Further below, the profile component is rendered with the display name, email, and no game history
+    1. A sign out button appears below the profile component
+    1. Clicking on sign out returns you to the original login page
+    1. Navigate to Firebase console, click on the Authentication tab on the lefthand side, and verify the email appears in the list of users
+        1. [Link here](console.firebase.google.com/project/persistentown/authentication/users) to see list of users
+6. For good measure, attempt to sign in using the same credentials to ensure the account is maintained in the database
+
+### Test Error Cases
+
+__1 - Display name is not unique__
+
+1. Following the steps above to create an account, record the display name (A.K.A., duplicate display name) used to register
+2. Generate new credentials for the email and/or password
+    1. An email address can only have one account associated with it
+2. Fill out the Create Account form using the newly generated email address, a password with more than 6 characters, and the duplicate display name
+3. Click on the Create Account button
+4. __Verify the following:__
+    1. A red toast appears at the bottom titled 'Error creating account', with description 'Display name is taken. Please choose a different display name.'
+    2. The form values remain
+    3. The screen remains in the original home screen
+    1. Navigate to Firebase console, click on the Authentication tab on the lefthand side, and verify the email does NOT in the list of users
+        1. [Link here](console.firebase.google.com/project/persistentown/authentication/users) to see list of users
+
+__2 - Email is already registered__
+1. Following the steps above to create an account, record the email used to register (A.K.A., duplicate email address) 
+2. Generate new credentials for the display name and/or password
+2. Fill out the Create Account form using the newly generated display name, the duplicate email address, and the password
+3. Click on the Create Account button
+4. __Verify the following:__
+    1. A red toast appears at the bottom titled 'Error creating account', with description 'Email address is already in use. Please use a different email address.
+    2. The form is completely reset
+    3. The screen remains in the original home screen
+    1. Navigate to Firebase console, click on the Authentication tab on the lefthand side, and verify the email does NOT in the list of users
+        1. [Link here](console.firebase.google.com/project/persistentown/authentication/users) to see list of users
+
+__3 - Password is less than 6 characters__
+1. Generate a display name and temporary email address using the credentials above
+2. Fill out the Create Account form using those credentials, with password having a length less than 6
+    1. For good measure, attempt with different lengths of passwords (2 characters, 5 characters, etc.)
+3. Click on the Create Account button
+4. __Verify the following:__
+    1. A red toast appears at the bottom titled 'Error creating account', with description 'Password must be at least 6 characters.'
+    2. The form is completely reset
+    3. The screen remains in the original home screen
+    1. Navigate to Firebase console, click on the Authentication tab on the lefthand side, and verify the email does NOT in the list of users
+        1. [Link here](console.firebase.google.com/project/persistentown/authentication/users) to see list of users
+
+__4 - Any field is left empty__
+
+** Test different combinations of empty fields — all are empty, just the display name, just the email, just the password — as many as are needed to ensure confidence.
+
+1. Ensure the form starts off with no error messages
+2. Leave at least one field empty (see note above)
+3. __Verify the following (all cases should have this behavior):__
+    1. A red toast appears at the bottom titled 'Error creating account', with description 'All fields are required.'
+    1. The form is completely reset
+    1. Navigate to Firebase console, click on the Authentication tab on the lefthand side, and verify the email does NOT in the list of users
+        1. [Link here](console.firebase.google.com/project/persistentown/authentication/users) to see list of users
+
+This component should also highlight empty textboxes show red text saying 'All fields are required.' whenever the user types into a field(s) and then deletes all of it.
+
+
 
 ## Signing into an account
 
@@ -88,4 +184,5 @@ In order to access Firebase Console (which contains user authentication info and
 
 
 ## Displaying account information
+
 
