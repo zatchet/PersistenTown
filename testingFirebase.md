@@ -184,5 +184,67 @@ This component should also highlight empty textboxes show red text saying 'All f
 
 
 ## Displaying account information
-
-
+0. Prior to all steps
+    1. Navigate to temp-mail.org/en/
+        1. Create two temporary emails
+        2. For each email, create an account on Persistentown, record the Display Name and Password used to create the account
+            * persistentown.onrender.com
+            * These accounts will be referred to as Account 1 and Account 2 
+        3. On browser of choice, open Persistentown, and log in using Account 1
+        4. Using a separate browser instance, or an incognito tab, open Persistentown and log in using Account 2
+1. To Test:
+    1. In the town selection screen of Account 1
+        1. Viewing My Account Information 
+            * At the bottom of the page, a box with title My Account Information should be visible
+            * The display name of Account 1 should be visible
+            * Text stating "Email: " then Account 1's email should be visible
+            * Text stating "No game history yet" should be visible
+            * A Sign Out button should be visible
+            * When the Sign Out button is clicked, the user is redirected back to the login screen
+        2. Following this, input the Account 1 credentials to log back in
+    2. Account 1 should create a town, and Account 2 should join the created town.
+    3. In the newly created town
+        1. Accounts 1 and 2 should navigate to a Connect Four area, and play a game in which Account 1 is victorious.
+        2. Both accounts will then leave the game and game area
+        3. Account 1 will scroll down and disconnect
+        4. In Account 1's town selection screen
+            1. In the My Account Information area
+                * Display name and email of the user will be visible
+                * A display for the number of wins, losses, and ties for all implemented games will be displayed
+                * The only WLT record which is not all zero values for these games will be for Connect Four
+                * The WLT record for Connect Four will read "1 - 0 - 0"
+                * An object containing a list of Account 1's match history is visible
+                * A single row is on this list, containing the current date, "Connect Four" representing the game type, a "Win" result, and the display name of Account 2 (representing the opponent), is visible.
+            2. Account 1 will rejoin the created town
+        5. In Account 2's town selection screen
+            1. In the My Account Information area
+                * Display name and email of the user will be visible
+                * A display for the number of wins, losses, and ties for all implemented games will be displayed
+                * The only WLT record which is not all zero values for these games will be for Connect Four
+                * The WLT record for Connect Four will read "0 - 1 - 0"
+                * An object containing a list of Account 2's match history is visible
+                * A single row is on this list, containing the current date, "Connect Four" representing the game type, a "Lose" result, and the display name of Account 1, is visible.
+            2. Account 1 will rejoin the created town
+        6. Accounts 1 and 2 should navigate to a TicTacToe area, and play two games, the first in which is a tie, the second in which Account 1 will leave after making a move, causing Account 2 to win the game
+        7. Both accounts will then leave the game and game area
+        8. Account 1 will scroll down and disconnect
+        9. In Account 1's town selection screen
+            1. In the My Account Information area
+                * The WLT record for Connect Four will read "1 - 0 - 0"
+                * The WLT record for TicTacToe will read "0 - 1 - 1"
+                * An object containing a list of Account 1's match history is visible
+                * Three rows are on this list
+                * The top row contains the current date, Connect Four, Win, and Account 2's display name
+                * The second row contains the current date, TicTacToe, Tie, and Account 2's display name
+                * The third row contains the current date, TicTacToe, Lose, and Account 2's display name
+                8. Account 1 will scroll down and disconnect
+        10. Account 2 will scroll down and disconnect
+        11. In Account 2's town selection screen
+            1. In the My Account Information area
+                * The WLT record for Connect Four will read "0 - 1 - 0"
+                * The WLT record for TicTacToe will read "1 - 1 - 0"
+                * An object containing a list of Account 1's match history is visible
+                * Three rows are on this list
+                * The top row contains the current date, Connect Four, Lose, and Account 1's display name
+                * The second row contains the current date, TicTacToe, Tie, and Account 1's display name
+                * The third row contains the current date, TicTacToe, Win, and Account 1's display name
