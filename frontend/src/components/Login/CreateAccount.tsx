@@ -131,6 +131,7 @@ export default function CreateAccount({ updateDisplayName }: CreateAccountProps)
           {!formFilled && <FormErrorMessage>All fields are required.</FormErrorMessage>}
         </FormControl>
         <Button
+          mt={2}
           data-testid='createAccountButton'
           onClick={() => createAcc()}
           isLoading={isCreating}
