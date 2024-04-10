@@ -5,7 +5,7 @@ This document details the steps we followed to test that Firebase accurately cre
 
 ## Preliminary Steps
 
-This project runs on Node.js version 16.20.2, and npm version 8.19.4. `npm install` should be run on the base directory, as well as in the `\frontend` and `\townService` directories. Additionally, the appropriate inputs should be placed in `.env` files in the frontend and townService directories. Following this, tests can be ran locally by running `npm start` in these two directories. Instructions for all of these steps are outlined in the README.md located in the base directory. With both services running, a local versi
+This project runs on Node.js version 16.20.2, and npm version 8.19.4. `npm install` should be run on the base directory, as well as in the `\frontend` and `\townService` directories. Additionally, the appropriate inputs should be placed in `.env` files in the frontend and townService directories. Following this, tests can be ran locally by running `npm start` in these two directories. Instructions for all of these steps are outlined in the README.md located in the base directory. With both services running, a local version can be ran on a browser tab at URL localhost `http://localhost:3000/`
 
 In order to access Firebase Console (which contains user authentication info and stored user account info) a gmail account with access and editing permissions has been prepared, with email address "cs4530group110@gmail.com" and password "CS4530group110!!!", with apostrophes removed.
 
