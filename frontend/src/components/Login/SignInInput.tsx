@@ -75,9 +75,7 @@ export default function SignInInput() {
 
   const signInWithGoogle = async () => {
     await signInWithPopup(auth, provider)
-      .then(result => {
-        // not sure what to do here about enforcing uniqueness, since this method can both sign in AND sign up
-        console.log(result.user.displayName);
+      .then(() => {
         toast({
           title: 'Signed in with Google',
           description: 'Enjoy Covey.Town!',
