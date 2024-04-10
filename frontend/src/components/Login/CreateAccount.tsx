@@ -11,7 +11,7 @@ import {
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../classes/users/firebaseconfig';
-import { userNameExists, addUsernameIfNotPresent } from '../../classes/users/userNameService';
+import { addUsernameIfNotPresent, userNameExists } from '../../classes/users/userNameService';
 
 type CreateAccountProps = {
   updateDisplayName: (newName: string) => void;
@@ -69,39 +69,40 @@ export default function CreateAccount({ updateDisplayName }: CreateAccountProps)
         isClosable: true,
       });
     } else {
-      if (await userNameExists(displayName)) {
-        resetForm();
+      const usernameUnique = !(await userNameExists(displayName));
+      if (!usernameUnique) {
+        setIsCreating(false);
         toast({
           title: 'Error creating account',
-          description: 'Display name already in use. Please choose a different display name.',
+          description: 'Display name is taken. Please choose a different display name.',
           status: 'error',
           duration: 9000,
           isClosable: true,
         });
-        return;
+      } else {
+        updateDisplayName(displayName);
+        await createUserWithEmailAndPassword(auth, email, password)
+          .then(async () => {
+            await addUsernameIfNotPresent(displayName, auth.currentUser?.uid || '');
+            toast({
+              title: 'Account created successfully',
+              description: 'Enjoy Covey.Town!',
+              status: 'success',
+              duration: 9000,
+              isClosable: true,
+            });
+          })
+          .catch((error: Error) => {
+            resetForm();
+            toast({
+              title: 'Error creating account',
+              description: errorToStr(error),
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+            });
+          });
       }
-      updateDisplayName(displayName);
-      await createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          addUsernameIfNotPresent(displayName);
-          toast({
-            title: 'Account created successfully',
-            description: 'Enjoy Covey.Town!',
-            status: 'success',
-            duration: 9000,
-            isClosable: true,
-          });
-        })
-        .catch((error: Error) => {
-          resetForm();
-          toast({
-            title: 'Error creating account',
-            description: errorToStr(error),
-            status: 'error',
-            duration: 9000,
-            isClosable: true,
-          });
-        });
     }
   }
 

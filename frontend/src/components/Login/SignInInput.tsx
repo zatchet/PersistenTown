@@ -87,7 +87,6 @@ export default function SignInInput() {
         });
       })
       .catch(error => {
-        console.log(error);
         toast({
           title: 'Error signing in',
           status: 'error',
