@@ -11,6 +11,7 @@ import {
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../classes/users/firebaseconfig';
+import { userNameExists, addUsernameIfNotPresent } from '../../classes/users/userNameService';
 
 type CreateAccountProps = {
   updateDisplayName: (newName: string) => void;
@@ -68,9 +69,21 @@ export default function CreateAccount({ updateDisplayName }: CreateAccountProps)
         isClosable: true,
       });
     } else {
+      if (await userNameExists(displayName)) {
+        resetForm();
+        toast({
+          title: 'Error creating account',
+          description: 'Display name already in use. Please choose a different display name.',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        });
+        return;
+      }
       updateDisplayName(displayName);
       await createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
+          addUsernameIfNotPresent(displayName);
           toast({
             title: 'Account created successfully',
             description: 'Enjoy Covey.Town!',
